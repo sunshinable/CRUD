@@ -2,6 +2,7 @@ const form = document.getElementById('form');
 const nameInput = document.getElementById('name');
 const phoneInput = document.getElementById('phone');
 const courseInput = document.getElementById('course');
+const searchInput = document.getElementById('search');
 const table = document.getElementById('table').getElementsByTagName('tbody')[0];
 let data = JSON.parse(localStorage.getItem('data')) || [];
 
@@ -26,6 +27,22 @@ function deleteRow(item) {
         table.deleteRow(index);
     }
 }
+
+function filterTable(searchQuery) {
+    const rows = table.getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let match = false;
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].innerHTML.toLowerCase().includes(searchQuery.toLowerCase())) {
+                match = true;
+                break;
+            }
+        }
+        rows[i].style.display = match ? '' : 'none';
+    }
+}
+
 data.forEach(addRow);
 
 form.addEventListener('submit', function(event) {
@@ -38,4 +55,8 @@ form.addEventListener('submit', function(event) {
     localStorage.setItem('data', JSON.stringify(data));
     addRow(item);
     form.reset();
+});
+
+searchInput.addEventListener('input', function() {
+    filterTable(searchInput.value);
 });
